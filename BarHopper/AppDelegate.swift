@@ -8,6 +8,10 @@
 
 import UIKit
 import CoreData
+import Parse
+import Bolts
+import FBSDKCoreKit
+import FBSDKLoginKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,8 +20,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+        // [Optional] Power your app with Local Datastore. For more info, go to
+        // https://parse.com/docs/ios_guide#localdatastore/iOS
+        //Parse.enableLocalDatastore()
+        
+        // Initialize Parse.
+        Parse.setApplicationId("YdMQFXY9bqkQo9A293jmBXdbwQHqtXmwPAkM1E4u",
+            clientKey: "rb3cpiapr66LBd8NaJyMKs9YlyproWa1pRp7AhHr")
+        
+        PFFacebookUtils.initializeFacebookWithApplicationLaunchOptions(launchOptions)
+        
+        // [Optional] Track statistics around application opens.
+        //PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
+        
         // Override point for customization after application launch.
-        return true
+        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+    
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+        return FBSDKApplicationDelegate.sharedInstance().application(
+        application,
+            openURL: url,
+            sourceApplication: sourceApplication,
+            annotation: annotation)
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -35,6 +61,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
+        
+        FBSDKAppEvents.activateApp()
+        
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
 
